@@ -5,41 +5,41 @@ on:
       name:
         description: 'app name'
         required: true
-        default: 'twitter'
+        default: 'discord'
       title:
         description: 'app title'
         required: true
-        default: 'Twitter'
+        default: 'Discord'
       name_zh:
         description: 'app name in Chinese'
         required: true
-        default: '推特'
+        default: 'Discord'
       url:
         description: 'app url'
         required: true
-        default: 'https://twitter.com/'
+        default: 'https://discord.com/channels/@me'
   workflow_call:
     inputs:
       name:
         description: 'app name'
         type: string
         required: true
-        default: 'twitter'
+        default: 'Discord'
       title:
         description: 'app title'
         required: true
         type: string
-        default: 'Twitter'
+        default: 'Discord'
       name_zh:
         description: 'app name in Chinese'
         required: true
         type: string
-        default: '推特'
+        default: 'Discord'
       url:
         description: 'app url'
         required: true
         type: string
-        default: 'https://twitter.com/'
+        default: 'https://discord.com/channels/@me'
 
 jobs:
   build_single_app:
