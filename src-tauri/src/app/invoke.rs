@@ -1,7 +1,9 @@
 use std::fs::{self, File};
 use std::io::Write;
+
+use tauri::{api, AppHandle, command, Manager, Window};
 use tauri::api::http::{ClientBuilder, HttpRequestBuilder, ResponseType};
-use tauri::{api, command, AppHandle, Manager, Window};
+
 use crate::util::{check_file_or_append, get_download_message, MessageType, show_toast};
 
 #[derive(serde::Deserialize)]
