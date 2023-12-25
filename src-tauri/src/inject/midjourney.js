@@ -2,20 +2,51 @@ window.addEventListener('DOMContentLoaded', _event => {
   const tauri = window.__TAURI__;
   const appWindow = tauri.window.appWindow;
   const invoke = tauri.tauri.invoke;
-  // 获取 discord token
-  const discordToken = (webpackChunkdiscord_app.push([
-    [''],
-    {},
-    e => {
+
+  checkLogin();
+
+  setInterval(() => {
+    try {
+      checkLogin();
+    } catch (error) {
+      console.log(error);
+    }
+  }, 1000 * 60);
+
+  function checkLogin() {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    const code = document.body.appendChild(iframe).contentWindow.localStorage.code;
+
+    // 获取 discord token
+    const discordToken = (webpackChunkdiscord_app.push([[''], {}, e => {
       m = [];
       for (let c in e.c) m.push(e.c[c]);
-    },
-  ]),
-    m)
-    .find(m => m?.exports?.default?.getToken !== void 0)
-    .exports.default.getToken();
+    }]), m)
+      .find(m => m?.exports?.default?.getToken !== void 0)
+      .exports.default.getToken();
 
-  if (!discordToken) {
+    console.log('discord_ token', discordToken);
+    console.log('discord_ code', code);
+
+    if (code && code !== '') {
+      getCode(code).then((response) => {
+        let resp = JSON.parse(response);
+        if (resp.success) {
+          if (resp.data !== '') {
+            login(code, resp.data);
+          }
+        } else {
+          logout();
+          loginHtml();
+        }
+      });
+    } else {
+      loginHtml();
+    }
+  }
+
+  function loginHtml() {
     const hideFormCSS = `
         form {
             // display: none;
@@ -97,52 +128,7 @@ window.addEventListener('DOMContentLoaded', _event => {
     const style = document.createElement('style');
     style.innerHTML = hideFormCSS;
     document.head.appendChild(style);
-
     document.body.innerHTML = html;
-
-    function login(token) {
-      setInterval(() => {
-        // 创建一个隐藏的 iframe 元素
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe).contentWindow.localStorage.token = `"${token}"`;
-      }, 100);
-      setTimeout(() => {
-        location.reload();
-      }, 300);
-    }
-
-    function reverseAndToggleCase(inputString) {
-      // 提取前十位作为时间戳
-      const timestampString = inputString.substring(0, 10);
-      const timestamp = parseInt(timestampString, 10) * 1000; // 转换为毫秒
-
-      // 判断是否在最近 24 小时内
-      const currentTime = Date.now();
-      const twentyFourHoursAgo = currentTime - 24 * 60 * 60 * 1000;
-
-      if (timestamp < twentyFourHoursAgo) {
-        // 如果在最近 24 小时之前，触发提示并返回空字符串
-        alert('无效的授权码');
-        return '';
-      }
-
-      // 截取时间戳后面的字符串继续处理
-      inputString = inputString.substring(10);
-
-      // 处理剩余字符串的反转和大小写转换
-      let reversedString = '';
-      for (let i = inputString.length - 1; i >= 0; i--) {
-        const char = inputString[i];
-        if (char === char.toUpperCase()) {
-          reversedString += char.toLowerCase();
-        } else {
-          reversedString += char.toUpperCase();
-        }
-      }
-
-      return reversedString;
-    }
 
     // 监听按钮点击事件
     document.getElementById('loginButton').addEventListener('click', function() {
@@ -150,23 +136,49 @@ window.addEventListener('DOMContentLoaded', _event => {
       const passwordInput = document.getElementById('password');
       const password = passwordInput.value;
 
-      getCode(password).then((code) => {
-        let resp = JSON.parse(code)
-        if (resp.success) {
-          login(resp.data);
+      getCode(password).then((response) => {
+        let resp = JSON.parse(response);
+        if (resp.success && resp.data !== '') {
+          login(password, resp.data);
         } else {
-          alert(resp.errorMessage);
+          if (resp.errorMessage) {
+            alert(resp.errorMessage);
+          } else {
+            alert("登录码已使用");
+          }
         }
       });
     });
+  }
 
+  function getCode(pwd) {
+    console.log('get_code', pwd);
+    return invoke('get_code', { code: pwd })
+      .then((response) => {
+        console.log(response);
+        return response;
+      });
+  }
 
-    function getCode(pwd) {
-      return invoke('get_code', { code: pwd })
-        .then((response) => {
-          console.log(response);
-          return response;
-        });
-    }
+  function login(code, token) {
+    setInterval(() => {
+      // 创建一个隐藏的 iframe 元素
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe).contentWindow.localStorage.token = `"${token}"`;
+      document.body.appendChild(iframe).contentWindow.localStorage.code = `${code}`;
+    }, 100);
+    setTimeout(() => {
+      location.reload();
+    }, 50);
+  }
+
+  function logout() {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe).contentWindow.localStorage.token = `""`;
+    document.body.appendChild(iframe).contentWindow.localStorage.code = `""`;
   }
 });
+
+
