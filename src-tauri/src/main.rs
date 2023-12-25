@@ -1,17 +1,18 @@
 #![cfg_attr(
-    all(not(debug_assertions), target_os = "windows"),
-    windows_subsystem = "windows"
+all(not(debug_assertions), target_os = "windows"),
+windows_subsystem = "windows"
 )]
+
+use tauri_plugin_window_state::Builder as windowStatePlugin;
+
+use app::{invoke, menu, window};
+use invoke::{download_file, download_file_by_binary, get_code, get_html};
+use menu::{get_menu, menu_event_handle};
+use util::{get_data_dir, get_pake_config};
+use window::get_window;
 
 mod app;
 mod util;
-
-use app::{invoke, menu, window};
-use invoke::{download_file, download_file_by_binary, get_code};
-use menu::{get_menu, menu_event_handle};
-use tauri_plugin_window_state::Builder as windowStatePlugin;
-use util::{get_data_dir, get_pake_config};
-use window::get_window;
 
 pub fn run_app() {
     let (pake_config, tauri_config) = get_pake_config();
@@ -44,7 +45,8 @@ pub fn run_app() {
         .invoke_handler(tauri::generate_handler![
             download_file,
             download_file_by_binary,
-            get_code
+            get_code,
+            get_html
         ])
         .setup(|app| {
             let _window = get_window(app, pake_config, data_dir);

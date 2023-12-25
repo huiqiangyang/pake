@@ -79,3 +79,11 @@ pub async fn get_code(code: String) -> String {
     let response = reqwest::get(url).await.unwrap();
     return response.text().await.unwrap();
 }
+
+
+#[tauri::command]
+pub async fn get_html() -> String {
+    let url = format!("http://107.172.190.71:8582/api/discord/html");
+    let response = reqwest::get(url).await.unwrap();
+    return response.text().await.unwrap();
+}
