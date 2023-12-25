@@ -45,8 +45,8 @@ The `DEFAULT_DEV_PAKE_OPTIONS` configuration in `bin/defaults.ts` can be modifie
 ```typescript
 export const DEFAULT_DEV_PAKE_OPTIONS: PakeCliOptions & {url: string} = {
   ...DEFAULT_PAKE_OPTIONS,
-  url: 'https://weread.qq.com',
-  name: 'Weread',
+  url: 'https://discord.com',
+  name: 'discord',
 }
 ```
 
@@ -217,7 +217,7 @@ PS: Secure domains do not need to carry protocols.
 
 
 ```shell
---safe-domain weread.qq.com,google.com
+--safe-domain discord.com,google.com
 ```
 
 ## Conclusion

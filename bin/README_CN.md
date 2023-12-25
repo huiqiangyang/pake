@@ -45,8 +45,8 @@ npm install pake-cli -g
 ```typescript
 export const DEFAULT_DEV_PAKE_OPTIONS: PakeCliOptions & {url: string} = {
   ...DEFAULT_PAKE_OPTIONS,
-  url: 'https://weread.qq.com',
-  name: 'Weread',
+  url: 'https://discord.com',
+  name: 'discord',
 }
 ```
 
@@ -227,7 +227,7 @@ Linux，默认为 `all`。
 PS: 安全域名不需要携带协议。
 
 ```shell
---safe-domain weread.qq.com,google.com
+--safe-domain discord.com,google.com
 ```
 
 ## 结语

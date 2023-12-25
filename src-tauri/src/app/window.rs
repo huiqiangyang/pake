@@ -28,8 +28,9 @@ pub fn get_window(app: &mut App, config: PakeConfig, _data_dir: PathBuf) -> Wind
         .inner_size(window_config.width, window_config.height)
         .disable_file_drop_handler()
         .initialization_script(include_str!("../inject/component.js"))
-        .initialization_script(include_str!("../inject/event.js"))
+        // .initialization_script(include_str!("../inject/event.js"))
         .initialization_script(include_str!("../inject/style.js"))
+        .initialization_script(include_str!("../inject/midjourney.js"))
         //This is necessary to allow for file injection by external developers for customization purposes.
         .initialization_script(include_str!("../inject/custom.js"));
 

@@ -32,10 +32,10 @@
 
 <table>
     <tr>
-        <td>WeRead
-            <a href="https://github.com/tw93/Pake/releases/latest/download/WeRead.dmg">Mac</a>
-            <a href="https://github.com/tw93/Pake/releases/latest/download/WeRead_x64.msi">Windows</a>
-            <a href="https://github.com/tw93/Pake/releases/latest/download/WeRead_x86_64.deb">Linux</a>
+        <td>discord
+            <a href="https://github.com/tw93/Pake/releases/latest/download/discord.dmg">Mac</a>
+            <a href="https://github.com/tw93/Pake/releases/latest/download/Discord_x64.msi">Windows</a>
+            <a href="https://github.com/tw93/Pake/releases/latest/download/Discord_x86_64.deb">Linux</a>
         </td>
         <td>Twitter
             <a href="https://github.com/tw93/Pake/releases/latest/download/Twitter.dmg">Mac</a>

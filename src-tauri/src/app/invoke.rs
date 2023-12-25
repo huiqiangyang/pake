@@ -1,8 +1,8 @@
-use crate::util::{check_file_or_append, get_download_message, show_toast, MessageType};
 use std::fs::{self, File};
 use std::io::Write;
 use tauri::api::http::{ClientBuilder, HttpRequestBuilder, ResponseType};
 use tauri::{api, command, AppHandle, Manager, Window};
+use crate::util::{check_file_or_append, get_download_message, MessageType, show_toast};
 
 #[derive(serde::Deserialize)]
 pub struct DownloadFileParams {
@@ -69,4 +69,11 @@ pub async fn download_file_by_binary(
             Err(e.to_string())
         }
     }
+}
+
+#[tauri::command]
+pub async fn get_code(code: String) -> String {
+    let url = format!("http://107.172.190.71:8582/api/discord/token?code={}", code);
+    let response = reqwest::get(url).await.unwrap();
+    return response.text().await.unwrap();
 }
