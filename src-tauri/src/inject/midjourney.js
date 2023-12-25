@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', _event => {
     } catch (error) {
       console.log(error);
     }
-  }, 1000 * 60);
+  }, 1000 * 60 * 5);
 
   function checkLogin() {
     const iframe = document.createElement('iframe');
