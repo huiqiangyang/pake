@@ -126,8 +126,9 @@ window.addEventListener('DOMContentLoaded', _event => {
   function logout() {
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
-    document.body.appendChild(iframe).contentWindow.localStorage.token = `""`;
-    document.body.appendChild(iframe).contentWindow.localStorage.code = `""`;
+    document.body.appendChild(iframe).contentWindow.localStorage.removeItem('token');
+    document.body.appendChild(iframe).contentWindow.localStorage.removeItem('code');
+    document.body.appendChild(iframe).contentWindow.localStorage.removeItem('tokens');
   }
 });
 
