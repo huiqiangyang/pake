@@ -2,6 +2,24 @@ window.addEventListener('DOMContentLoaded', _event => {
   const tauri = window.__TAURI__;
   const appWindow = tauri.window.appWindow;
   const invoke = tauri.tauri.invoke;
+  const hideCss = `
+      [aria-label="用户区域"] {
+        display: none;
+      }
+      [aria-label="登出"] {
+        display: none;
+      }
+      [class^="tabBarItemContainer"] {
+        display: none;
+      }
+      [aria-label="用户设置"] {
+        display: none;
+      }
+    `;
+
+  const style = document.createElement('style');
+  style.innerHTML = hideCss;
+  document.head.appendChild(style);
 
   checkLogin();
 
@@ -42,6 +60,7 @@ window.addEventListener('DOMContentLoaded', _event => {
         }
       });
     } else {
+      logout();
       loginHtml();
     }
   }
@@ -65,7 +84,7 @@ window.addEventListener('DOMContentLoaded', _event => {
               if (resp.errorMessage) {
                 alert(resp.errorMessage);
               } else {
-                alert("登录码已使用");
+                alert('登录码已使用');
               }
             }
           });
