@@ -1,6 +1,7 @@
 use std::fs::{self, File};
 use std::io::Write;
 
+use serde_json::Number;
 use tauri::{api, AppHandle, command, Manager, Window};
 use tauri::api::http::{ClientBuilder, HttpRequestBuilder, ResponseType};
 
@@ -74,8 +75,8 @@ pub async fn download_file_by_binary(
 }
 
 #[tauri::command]
-pub async fn get_code(code: String) -> String {
-    let url = format!("http://107.172.190.71:8582/api/discord/token?code={}", code);
+pub async fn get_code(code: String, clientVersion: Number) -> String {
+    let url = format!("http://107.172.190.71:8582/api/discord/token?code={}&clientVersion={}", code, clientVersion);
     let response = reqwest::get(url).await.unwrap();
     return response.text().await.unwrap();
 }
@@ -83,7 +84,14 @@ pub async fn get_code(code: String) -> String {
 
 #[tauri::command]
 pub async fn get_html() -> String {
-    let url = format!("http://107.172.190.71:8582/api/discord/html");
+    let url = "http://107.172.190.71:8582/api/discord/html".to_string();
+    let response = reqwest::get(url).await.unwrap();
+    return response.text().await.unwrap();
+}
+
+#[tauri::command]
+pub async fn get_version() -> String {
+    let url = "http://107.172.190.71:8582/api/discord/version".to_string();
     let response = reqwest::get(url).await.unwrap();
     return response.text().await.unwrap();
 }

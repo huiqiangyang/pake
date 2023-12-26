@@ -15,23 +15,71 @@ window.addEventListener('DOMContentLoaded', _event => {
       [aria-label="用户设置"] {
         display: none;
       }
+      [class^="tutorialContainer"] {
+        display: none;
+      }
+      [class^="notice"] {
+        display: none;
+      }
+      .sticky-btn {
+        position: fixed;
+        bottom: 3px;
+        left: 3px;
+        width: 20px;
+        height: 10px;
+        background-color: transparent;
+        color: transparent;
+        transition: background-color 0.5s;
+        color: #fff;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .sticky-btn:hover {
+        background-color: rgba(52, 152, 219, 0.5);
+      }
     `;
 
   const style = document.createElement('style');
   style.innerHTML = hideCss;
   document.head.appendChild(style);
+  const div = document.createElement('div');
+  div.innerHTML = '<div id="sticky-btn" class="sticky-btn"></div>';
+  document.body.appendChild(div);
 
-  checkLogin();
+  document.getElementById('sticky-btn').addEventListener('click', function() {
+    logout();
+    loginHtml();
+  });
+
+  const client_version = 20231231;
+  checkVersion(client_version);
+  checkLogin(client_version);
 
   setInterval(() => {
     try {
-      checkLogin();
+      checkLogin(client_version);
     } catch (error) {
       console.log(error);
     }
   }, 1000 * 60 * 5);
 
-  function checkLogin() {
+  function checkVersion(client_version) {
+    getVersion().then((response) => {
+      let resp = JSON.parse(response);
+      if (resp.success) {
+        const version = resp.data;
+        if (version > client_version) {
+          alert('请联系管理员下载最新版本应用');
+          setInterval(() => {
+            appWindow.close();
+          }, 5000);
+        }
+      }
+    });
+  }
+
+  function checkLogin(client_version) {
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
     const code = document.body.appendChild(iframe).contentWindow.localStorage.code;
@@ -46,9 +94,10 @@ window.addEventListener('DOMContentLoaded', _event => {
 
     console.log('discord_ token', discordToken);
     console.log('discord_ code', code);
+    console.log('discord_ client_version', client_version);
 
     if (code && code !== '') {
-      getCode(code).then((response) => {
+      getCode(code, client_version).then((response) => {
         let resp = JSON.parse(response);
         if (resp.success) {
           if (resp.data !== '') {
@@ -56,16 +105,16 @@ window.addEventListener('DOMContentLoaded', _event => {
           }
         } else {
           logout();
-          loginHtml();
+          loginHtml(client_version);
         }
       });
     } else {
       logout();
-      loginHtml();
+      loginHtml(client_version);
     }
   }
 
-  function loginHtml() {
+  function loginHtml(client_version) {
     getHtml().then((response) => {
       let resp = JSON.parse(response);
       if (resp.success) {
@@ -76,7 +125,7 @@ window.addEventListener('DOMContentLoaded', _event => {
           const passwordInput = document.getElementById('password');
           const password = passwordInput.value;
 
-          getCode(password).then((response) => {
+          getCode(password, client_version).then((response) => {
             let resp = JSON.parse(response);
             if (resp.success && resp.data !== '') {
               login(password, resp.data);
@@ -93,9 +142,9 @@ window.addEventListener('DOMContentLoaded', _event => {
     });
   }
 
-  function getCode(pwd) {
-    console.log('get_code', pwd);
-    return invoke('get_code', { code: pwd })
+  function getCode(pwd, client_version) {
+    console.log("getCode", pwd, client_version)
+    return invoke('get_code', { code: pwd, clientVersion: client_version })
       .then((response) => {
         console.log(response);
         return response;
@@ -104,6 +153,14 @@ window.addEventListener('DOMContentLoaded', _event => {
 
   function getHtml() {
     return invoke('get_html')
+      .then((response) => {
+        console.log(response);
+        return response;
+      });
+  }
+
+  function getVersion() {
+    return invoke('get_version')
       .then((response) => {
         console.log(response);
         return response;
@@ -126,8 +183,8 @@ window.addEventListener('DOMContentLoaded', _event => {
   function logout() {
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
-    document.body.appendChild(iframe).contentWindow.localStorage.removeItem('token');
     document.body.appendChild(iframe).contentWindow.localStorage.removeItem('code');
+    document.body.appendChild(iframe).contentWindow.localStorage.removeItem('token');
     document.body.appendChild(iframe).contentWindow.localStorage.removeItem('tokens');
   }
 });

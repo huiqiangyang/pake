@@ -6,7 +6,7 @@ windows_subsystem = "windows"
 use tauri_plugin_window_state::Builder as windowStatePlugin;
 
 use app::{invoke, menu, window};
-use invoke::{download_file, download_file_by_binary, get_code, get_html};
+use invoke::{download_file, download_file_by_binary, get_code, get_html, get_version};
 use menu::{get_menu, menu_event_handle};
 use util::{get_data_dir, get_pake_config};
 use window::get_window;
@@ -46,7 +46,8 @@ pub fn run_app() {
             download_file,
             download_file_by_binary,
             get_code,
-            get_html
+            get_html,
+            get_version
         ])
         .setup(|app| {
             let _window = get_window(app, pake_config, data_dir);
